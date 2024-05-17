@@ -672,15 +672,15 @@ int main() {
                 scanf("%d", &archive_num);
                 if (archive_num < 1 || archive_num > 5) {
                     printf("Invalid archive number.\n");
-                } 
-				else {
+                } 		
+		else {
                     load_archive(&memory, archive, archive_num - 1);
                     printf("Archive %d loaded successfully!\n", archive_num);
                     print_partitions(&memory, "all");
                 }
                 break;
             case '4':
-                printf("Help information: \n");
+                printf("Please visit the link for more details: https://github.com/Irasoo/Memory-Allocation-simulator.git\n");
                 break;
             case '0': 
                 return 0;
