@@ -208,24 +208,24 @@ int allocate_process_general(Memory* memory, int process_size, char process_code
 
 void sort_partitions(Partition** head) {
     if (*head == NULL || (*head)->next == NULL) {
-        return; // Èç¹ûÁ´±íÎª¿Õ»òÖ»ÓĞÒ»¸öÔªËØ£¬Ôò²»ĞèÒªÅÅĞò
+        return; // å¦‚æœé“¾è¡¨ä¸ºç©ºæˆ–åªæœ‰ä¸€ä¸ªå…ƒç´ ï¼Œåˆ™ä¸éœ€è¦æ’åº
     }
 
-    Partition *sorted = NULL; // ´´½¨Ò»¸öĞÂµÄÁ´±íÓÃÓÚ´æ·ÅÅÅĞòºóµÄ½Úµã
-    Partition *current = *head; // ÓÃÓÚ±éÀúÔ­Á´±íµÄÖ¸Õë
-    Partition *next = NULL; // ÓÃÓÚ±£´æµ±Ç°½ÚµãµÄÏÂÒ»¸ö½Úµã£¬ÒòÎª²åÈë²Ù×÷»á¸Ä±äÁ´±í½á¹¹
+    Partition *sorted = NULL; // åˆ›å»ºä¸€ä¸ªæ–°çš„é“¾è¡¨ç”¨äºå­˜æ”¾æ’åºåçš„èŠ‚ç‚¹
+    Partition *current = *head; // ç”¨äºéå†åŸé“¾è¡¨çš„æŒ‡é’ˆ
+    Partition *next = NULL; // ç”¨äºä¿å­˜å½“å‰èŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹ï¼Œå› ä¸ºæ’å…¥æ“ä½œä¼šæ”¹å˜é“¾è¡¨ç»“æ„
 
     while (current != NULL) {
-        next = current->next; // ±£´æµ±Ç°½ÚµãµÄÏÂÒ»¸ö½Úµã
+        next = current->next; // ä¿å­˜å½“å‰èŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
 
-        // ÕÒµ½ºÏÊÊµÄ²åÈëÎ»ÖÃ
+        // æ‰¾åˆ°åˆé€‚çš„æ’å…¥ä½ç½®
         if (sorted == NULL || sorted->start_address >= current->start_address) {
-            // Èç¹ûĞÂÁ´±íÎª¿Õ»òµ±Ç°½ÚµãÓ¦²åÔÚÊ×Î»
+            // å¦‚æœæ–°é“¾è¡¨ä¸ºç©ºæˆ–å½“å‰èŠ‚ç‚¹åº”æ’åœ¨é¦–ä½
             current->next = sorted;
             sorted = current;
         } else {
-            // Ñ°ÕÒÔÚĞÂÁ´±íÖĞµÄÕıÈ·Î»ÖÃ²¢²åÈë
-            Partition *cursor = sorted; // ÓÃÓÚ±éÀúĞÂÁ´±íÕÒµ½²åÈëµã
+            // å¯»æ‰¾åœ¨æ–°é“¾è¡¨ä¸­çš„æ­£ç¡®ä½ç½®å¹¶æ’å…¥
+            Partition *cursor = sorted; // ç”¨äºéå†æ–°é“¾è¡¨æ‰¾åˆ°æ’å…¥ç‚¹
             while (cursor->next != NULL && cursor->next->start_address < current->start_address) {
                 cursor = cursor->next;
             }
@@ -233,18 +233,18 @@ void sort_partitions(Partition** head) {
             cursor->next = current;
         }
 
-        current = next; // ÒÆ¶¯µ½Ô­Á´±íµÄÏÂÒ»¸ö½Úµã
+        current = next; // ç§»åŠ¨åˆ°åŸé“¾è¡¨çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
     }
 
-    *head = sorted; // ¸üĞÂÍ·Ö¸ÕëÖ¸ÏòÒÑÅÅĞòµÄÁ´±í
+    *head = sorted; // æ›´æ–°å¤´æŒ‡é’ˆæŒ‡å‘å·²æ’åºçš„é“¾è¡¨
 }
 
 
 int validate_memory(Memory* memory) {
     int total_used = 0;
-    int last_address = 1; // ´ÓµØÖ·1¿ªÊ¼
+    int last_address = 1; // ä»åœ°å€1å¼€å§‹
 
-    // È·±£ÄÚ´æ·ÖÇø°´µØÖ·ÅÅĞò
+    // ç¡®ä¿å†…å­˜åˆ†åŒºæŒ‰åœ°å€æ’åº
     sort_partitions(&memory->free_partitions);
     sort_partitions(&memory->allocated_partitions);
 
@@ -252,7 +252,7 @@ int validate_memory(Memory* memory) {
     Partition *allocated_current = memory->allocated_partitions;
     Partition *next_partition = NULL;
 
-    // È·¶¨µÚÒ»¸ö·ÖÇøµÄÎ»ÖÃ
+    // ç¡®å®šç¬¬ä¸€ä¸ªåˆ†åŒºçš„ä½ç½®
     if (free_current != NULL && (allocated_current == NULL || free_current->start_address <= allocated_current->start_address)) {
         next_partition = free_current;
         free_current = free_current->next;
@@ -261,22 +261,22 @@ int validate_memory(Memory* memory) {
         allocated_current = allocated_current->next;
     }
 
-    // ´ÓµÚÒ»¸öµØÖ·Îª1µÄ·ÖÇø¿ªÊ¼
+    // ä»ç¬¬ä¸€ä¸ªåœ°å€ä¸º1çš„åˆ†åŒºå¼€å§‹
     if (next_partition != NULL && next_partition->start_address != 1) {
         printf("Error: Memory does not start from address 1.\n");
-        return 0; // ·ÖÇøÃ»ÓĞ´ÓµØÖ·1¿ªÊ¼£¬Ğ£ÑéÊ§°Ü
+        return 0; // åˆ†åŒºæ²¡æœ‰ä»åœ°å€1å¼€å§‹ï¼Œæ ¡éªŒå¤±è´¥
     }
 
-    // µü´ú¼ì²éËùÓĞ·ÖÇøµÄÁ¬ĞøĞÔ
+    // è¿­ä»£æ£€æŸ¥æ‰€æœ‰åˆ†åŒºçš„è¿ç»­æ€§
     while (next_partition != NULL) {
         if (next_partition->start_address != last_address) {
             printf("Error: Non-continuous memory at address %d. Expected start at %d.\n", next_partition->start_address, last_address);
-            return 0; // ·ÖÇø²»Á¬Ğø£¬Ğ£ÑéÊ§°Ü
+            return 0; // åˆ†åŒºä¸è¿ç»­ï¼Œæ ¡éªŒå¤±è´¥
         }
         total_used += next_partition->size;
-        last_address = next_partition->start_address + next_partition->size; // ¸üĞÂÏÂÒ»¸ö·ÖÇøµÄÔ¤ÆÚÆğÊ¼µØÖ·
+        last_address = next_partition->start_address + next_partition->size; // æ›´æ–°ä¸‹ä¸€ä¸ªåˆ†åŒºçš„é¢„æœŸèµ·å§‹åœ°å€
 
-        // È·¶¨ÏÂÒ»¸ö·ÖÇø
+        // ç¡®å®šä¸‹ä¸€ä¸ªåˆ†åŒº
         if (free_current != NULL && (allocated_current == NULL || free_current->start_address <= allocated_current->start_address)) {
             next_partition = free_current;
             free_current = free_current->next;
@@ -288,13 +288,13 @@ int validate_memory(Memory* memory) {
         }
     }
 
-    // ¼ì²é·ÖÇø×Ü´óĞ¡ÊÇ·ñÆ¥ÅäÄÚ´æµÄ×Ü´óĞ¡
+    // æ£€æŸ¥åˆ†åŒºæ€»å¤§å°æ˜¯å¦åŒ¹é…å†…å­˜çš„æ€»å¤§å°
     if (total_used != memory->total_size) {
         printf("Error: Memory size mismatch. Total allocated: %d, Expected: %d\n", total_used, memory->total_size);
-        return 0; // ×Ü·ÖÇø´óĞ¡²»Æ¥Åä£¬Ğ£ÑéÊ§°Ü
+        return 0; // æ€»åˆ†åŒºå¤§å°ä¸åŒ¹é…ï¼Œæ ¡éªŒå¤±è´¥
     }
 
-    return 1; // ËùÓĞ·ÖÇøÁ¬ĞøÇÒ×Ü´óĞ¡Æ¥Åä£¬Ğ£Ñé³É¹¦
+    return 1; // æ‰€æœ‰åˆ†åŒºè¿ç»­ä¸”æ€»å¤§å°åŒ¹é…ï¼Œæ ¡éªŒæˆåŠŸ
 }
 
 
@@ -303,7 +303,7 @@ void print_partitions(Memory* memory, char* print_type) {
     Partition *current;
 
 	if (print_type == "free" || print_type == "all") {
-	    // ´òÓ¡¿ÕÏĞ·ÖÇø
+	    // æ‰“å°ç©ºé—²åˆ†åŒº
 	    printf("Free Partitions:\n");
 	    printf("%-12s %-12s %-12s %-12s\n", "Proc Code", "Start Addr", "Size", "Label");
 	    current = memory->free_partitions;
@@ -315,7 +315,7 @@ void print_partitions(Memory* memory, char* print_type) {
 	}
 
 	if (print_type == "allocated" || print_type == "all"){
-    // ´òÓ¡ÒÑ·ÖÅä·ÖÇø
+    // æ‰“å°å·²åˆ†é…åˆ†åŒº
     printf("\nAllocated Partitions:\n");
     printf("%-12s %-12s %-12s %-12s\n", "Proc Code", "Start Addr", "Size", "Label");
     current = memory->allocated_partitions;
@@ -359,11 +359,11 @@ void merge_free_partitions(Memory* memory) {
     Partition *current = memory->free_partitions;
     while (current != NULL && current->next != NULL) {
         if (current->start_address + current->size == current->next->start_address) {
-            // ºÏ²¢µ±Ç°·ÖÇøºÍÏÂÒ»¸ö·ÖÇø
+            // åˆå¹¶å½“å‰åˆ†åŒºå’Œä¸‹ä¸€ä¸ªåˆ†åŒº
             current->size += current->next->size;
             Partition *temp = current->next;
             current->next = temp->next;
-            free(temp);  // ÊÍ·ÅºÏ²¢ºóµÄ½Úµã
+            free(temp);  // é‡Šæ”¾åˆå¹¶åçš„èŠ‚ç‚¹
         } else {
             current = current->next;
         }
@@ -379,28 +379,28 @@ void free_partition(Memory* memory) {
 
     do {
         printf("Enter process code of the partition to free: ");
-        scanf(" %c", &process_code);  // ¶ÁÈ¡ÓÃ»§ÊäÈëµÄ½ø³Ì´úÂë
+        scanf(" %c", &process_code);  // è¯»å–ç”¨æˆ·è¾“å…¥çš„è¿›ç¨‹ä»£ç 
 
-        // ²éÕÒ²¢É¾³ıÖ¸¶¨µÄÒÑ·ÖÅä·ÖÇø
+        // æŸ¥æ‰¾å¹¶åˆ é™¤æŒ‡å®šçš„å·²åˆ†é…åˆ†åŒº
         Partition **current_ptr = &memory->allocated_partitions;
         Partition *to_free = NULL;
 
         while (*current_ptr != NULL) {
             if ((*current_ptr)->process_code == process_code) {
                 to_free = *current_ptr;
-                *current_ptr = to_free->next;  // ´ÓÒÑ·ÖÅäÁ´±íÖĞÒÆ³ı
-                to_free->next = NULL; // Çå³ıÖ¸ÏòÏÂÒ»¸ö·ÖÇøµÄÖ¸Õë
+                *current_ptr = to_free->next;  // ä»å·²åˆ†é…é“¾è¡¨ä¸­ç§»é™¤
+                to_free->next = NULL; // æ¸…é™¤æŒ‡å‘ä¸‹ä¸€ä¸ªåˆ†åŒºçš„æŒ‡é’ˆ
                 break;
             }
             current_ptr = &(*current_ptr)->next;
         }
 
         if (to_free) {
-            // ¸üĞÂ·ÖÇø±êÇ©ºÍ´úÂë
+            // æ›´æ–°åˆ†åŒºæ ‡ç­¾å’Œä»£ç 
             strcpy(to_free->label, "free");
-            to_free->process_code = 'F';  // Í³Ò»±ê¼ÇÎªF±íÊ¾¿ÕÏĞ
+            to_free->process_code = 'F';  // ç»Ÿä¸€æ ‡è®°ä¸ºFè¡¨ç¤ºç©ºé—²
 
-            // ½«ÊÍ·ÅµÄ·ÖÇøÌí¼Óµ½¿ÕÏĞ·ÖÇø±íÖĞ
+            // å°†é‡Šæ”¾çš„åˆ†åŒºæ·»åŠ åˆ°ç©ºé—²åˆ†åŒºè¡¨ä¸­
             Partition **insert_ptr = &memory->free_partitions;
             while (*insert_ptr != NULL && (*insert_ptr)->start_address < to_free->start_address) {
                 insert_ptr = &(*insert_ptr)->next;
@@ -412,12 +412,12 @@ void free_partition(Memory* memory) {
             printf("Partition with process code '%c' not found.\n", process_code);
         }
 
-        // Ñ¯ÎÊÓÃ»§ÊÇ·ñ¼ÌĞøÉ¾³ı·ÖÇø
+        // è¯¢é—®ç”¨æˆ·æ˜¯å¦ç»§ç»­åˆ é™¤åˆ†åŒº
         printf("Do you want to free another partition? (y/n): ");
         scanf(" %c", &choice);
     } while (choice == 'y' || choice == 'Y');
 
-    // ¼ì²é²¢ºÏ²¢ÏàÁÚµÄ¿ÕÏĞ·ÖÇø
+    // æ£€æŸ¥å¹¶åˆå¹¶ç›¸é‚»çš„ç©ºé—²åˆ†åŒº
     merge_free_partitions(memory);
 }
 
@@ -519,17 +519,17 @@ void copy_for_archive(Partition** dest, Partition* src) {
 
 
 int save_archive(Memory* memory, MemoryArchive archive[], int archive_num, char* comment) {
-    // ÏÈÇåÀíÄ¿±ê´æµµÖĞ¾ÉµÄÊı¾İ
+    // å…ˆæ¸…ç†ç›®æ ‡å­˜æ¡£ä¸­æ—§çš„æ•°æ®
     free_partitions_archive(&archive[archive_num]);
 
-    // Éî¿½±´¿ÕÏĞºÍÒÑ·ÖÅäµÄ·ÖÇøÁ´±í
+    // æ·±æ‹·è´ç©ºé—²å’Œå·²åˆ†é…çš„åˆ†åŒºé“¾è¡¨
     copy_for_archive(&archive[archive_num].free_partitions, memory->free_partitions);
     copy_for_archive(&archive[archive_num].allocated_partitions, memory->allocated_partitions);
     
-    // ÉèÖÃ×ÜÄÚ´æ´óĞ¡
+    // è®¾ç½®æ€»å†…å­˜å¤§å°
     archive[archive_num].total_size = memory->total_size;
 
-    // ¸´ÖÆ×¢ÊÍ
+    // å¤åˆ¶æ³¨é‡Š
     if (comment) {
         size_t length = strlen(comment) + 1;
         archive[archive_num].comment = (char*)malloc(length);
@@ -566,8 +566,8 @@ int main() {
     int total_size;
     scanf("%d", &total_size);
     init_memory(&memory, total_size);
-    init_memory(&pre_memory, total_size); // ³õÊ¼»¯Ô¤±¸ÄÚ´æ×´Ì¬
-    init_archive(archive, total_size); // ³õÊ¼»¯´æµµ
+    init_memory(&pre_memory, total_size); // åˆå§‹åŒ–é¢„å¤‡å†…å­˜çŠ¶æ€
+    init_archive(archive, total_size); // åˆå§‹åŒ–å­˜æ¡£
 
     char choice;
     int control;
